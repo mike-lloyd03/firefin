@@ -7,6 +7,8 @@ use serde::{Deserialize, Serialize};
 pub struct Config {
     pub username: String,
     pub password: String,
+    pub firefly_url: String,
+    pub firefly_pat: String,
 }
 
 impl Config {

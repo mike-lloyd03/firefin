@@ -5,9 +5,11 @@ use chrono::{
 };
 use reqwest::{blocking::get, Url};
 use serde::Deserialize;
-use serde_this_or_that::as_f64;
 
-use crate::config::Config;
+use crate::{
+    config::Config,
+    types::utils::{as_f64, as_f64_opt},
+};
 
 const BASE_URL: &str = "https://beta-bridge.simplefin.org/simplefin/";
 
@@ -19,9 +21,8 @@ pub struct Account {
     pub currency: String,
     #[serde(deserialize_with = "as_f64")]
     pub balance: f64,
-    // This should be optional
-    #[serde(deserialize_with = "as_f64")]
-    pub available_balance: f64,
+    #[serde(deserialize_with = "as_f64_opt")]
+    pub available_balance: Option<f64>,
     #[serde(with = "ts_seconds")]
     pub balance_date: DateTime<Utc>,
     pub transactions: Option<Vec<Transaction>>,
@@ -30,7 +31,7 @@ pub struct Account {
 
 impl Account {
     pub fn list(
-        config: Config,
+        config: &Config,
         start: Option<DateTime<Utc>>,
         end: Option<DateTime<Utc>>,
         pending: Option<bool>,
